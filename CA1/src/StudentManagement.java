@@ -6,32 +6,33 @@ public class StudentManagement {
     private ArrayList<Student> students = new ArrayList<Student>();
 
     public StudentManagement(){
-        Module[] moduleNabil = new Module[2];
-        moduleNabil[0] = new Module("ST1013", "FOP", 5, 50);
-        moduleNabil[1] = new Module("ST1014", "MATH", 5, 60);
-        this.createStudent("DIT", "2007421", "Nabil", 3.912, moduleNabil);
+        Module[] moduleNabil = new Module[3];
+        moduleNabil[0] = new Module("ST1013", "FOP", 5, 80);
+        moduleNabil[1] = new Module("ST1014", "MATH", 6, 80);
+        moduleNabil[2] = new Module("ST1015", "FOC", 5, 70);
+        this.createStudent("DIT", "2007421", "Nabil", moduleNabil);
 
         Module[] moduleLincoln = new Module[3];
-        moduleLincoln[0] = new Module("ST1013", "FOP", 5, 70);
-        moduleLincoln[1] = new Module("ST1014", "MATH", 5, 60);
-        moduleLincoln[2] = new Module("ST1015", "JPRG", 5, 45);
-        this.createStudent("DIT", "2156849", "Lincoln", 0.6, moduleLincoln);
+        moduleLincoln[0] = new Module("ST1013", "FOP", 2, 100);
+        moduleLincoln[1] = new Module("ST1014", "MATH", 5, 10);
+        moduleLincoln[2] = new Module("ST1015", "JPRG", 5, 10);
+        this.createStudent("DIT", "2156849", "Lincoln",  moduleLincoln);
 
         Module[] moduleXuanRong = new Module[3];
         moduleXuanRong[0] = new Module("ST1013", "FOP", 5, 75);
         moduleXuanRong[1] = new Module("ST1014", "MATH", 5, 80);
         moduleXuanRong[2] = new Module("ST1015", "JPRG", 5, 70);
-        this.createStudent("DIT", "2156849", "Xuan Rong", 4, moduleXuanRong);
+        this.createStudent("DIT", "2156849", "Xuan Rong", moduleXuanRong);
     }
 
-    public void createStudent(String course, String adminNumber, String name, double gpa, Module[] modules){
-        this.students.add(new Student(course, adminNumber, name, gpa, modules));
+    public void createStudent(String course, String adminNumber, String name,  Module[] modules){
+        this.students.add(new Student(course, adminNumber, name, modules));
     }
 
     public boolean removeStudent(String studentName){
         int foundStudentIndex = -999;
         for (int i = 0; i < students.size(); i++) {
-            if(students.get(i).getName().toLowerCase().equals(studentName.toLowerCase())){
+            if(students.get(i).getName().equalsIgnoreCase(studentName)){
                 foundStudentIndex = i;
             }
         }
@@ -47,9 +48,9 @@ public class StudentManagement {
 
     public Student searchStudent(String studentName){
         Student foundStudent = new Student();
-        for (int i = 0; i < students.size(); i++) {
-            if(students.get(i).getName().toLowerCase().equals(studentName.toLowerCase())){
-                foundStudent = students.get(i);
+        for (Student student : students) {
+            if (student.getName().equalsIgnoreCase(studentName)) {
+                foundStudent = student;
             }
         }
 
@@ -98,9 +99,11 @@ public class StudentManagement {
         }
     }
 
+//    TODO: Calculation error
     public String getStatistics(){
         StringBuilder returnString = new StringBuilder();
         int totalNumberOfStudents = 0;
+
         int totalNumberOfStudentAbove3PointFive = 0;
         int totalNumberOfStudentLessThanOne = 0;
 
@@ -108,15 +111,16 @@ public class StudentManagement {
 //            Check if the student is really a student or not
             if(!student.getCourse().isEmpty()){
                 totalNumberOfStudents ++;
-            }
 
-            if(student.getGpa() > 3.5){
-                totalNumberOfStudentAbove3PointFive++;
-            }else if(student.getGpa() < 1){
-                totalNumberOfStudentLessThanOne++;
+                if(student.getGpa() > 3.5){
+                    totalNumberOfStudentAbove3PointFive++;
+                }else if(student.getGpa() < 1){
+                    totalNumberOfStudentLessThanOne++;
+                }
             }
         }
 
+//
         returnString.append("STATISTIC\n");
         returnString.append("-----------------\n");
         returnString.append(String.format("There are %s students in total\n", totalNumberOfStudents));

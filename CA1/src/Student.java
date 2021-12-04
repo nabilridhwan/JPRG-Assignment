@@ -5,16 +5,22 @@ public class Student {
     private double gpa;
     private Module[] modules;
 
-    public Student(){
-        this("", "", "", 0, null);
+    public Student() {
+        this("", "", "", new Module[]{});
     }
 
-    public Student(String course, String adminNumber, String name, double gpa, Module[] modules){
+    public Student(String course, String adminNumber, String name, Module[] modules) {
         this.course = course;
         this.adminNumber = adminNumber;
         this.name = name;
-        this.gpa = gpa;
         this.modules = modules;
+
+//        Automatically calculate gpa
+        if (modules.length > 0) {
+            calculateGpa();
+        }
+
+        System.out.println(this.name + " : " + this.getGpa());
     }
 
     public String getCourse() {
@@ -27,6 +33,31 @@ public class Student {
 
     public String getName() {
         return name;
+    }
+
+    //    Proper calculation of GPA.
+    private void calculateGpa() {
+        //        Get all the modules
+        int totalCreditUnits = 0;
+        double numerator = 0;
+
+        for (Module module : modules) {
+            double studentMarks = module.getMarks();
+            if (studentMarks >= 80) {
+                numerator += (4 * module.getCreditUnit());
+            } else if (studentMarks >= 70) {
+                numerator += (3 * module.getCreditUnit());
+            } else if (studentMarks >= 60) {
+                numerator += (2 * module.getCreditUnit());
+            } else if (studentMarks >= 50) {
+                numerator += (module.getCreditUnit());
+            }
+
+            totalCreditUnits += module.getCreditUnit();
+        }
+
+        double gpa = numerator / totalCreditUnits;
+        setGpa(gpa);
     }
 
     public double getGpa() {
