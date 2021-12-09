@@ -85,8 +85,6 @@ public class StudentUser {
 
 //                TODO: Use setters and getters
                 if (adminUserChoiceInt == 1) {
-                    ArrayList<Module> modules = new ArrayList<Module>();
-
 //                        Get student course
                     String studentCourse = JOptionPane.showInputDialog("Student's Course");
 //                        Get student adminnumber
@@ -96,38 +94,38 @@ public class StudentUser {
                     String studentName = JOptionPane.showInputDialog("Student's Name");
 
 //                        Get student modules
-                    int moduleChoice = -5;
-                    do {
+                    int studentModuleNumber = 0;
 
-                        String moduleChoiceMessage = String.format("%s currently has %s module(s).\n1. Add Module\n2. Done", studentName, modules.size());
+                    String moduleChoiceMessage = String.format("How many modules does %s have?", studentName);
 
-                        try {
-                            moduleChoice = Integer.parseInt(JOptionPane.showInputDialog(moduleChoiceMessage));
-                        } catch (Exception e) {
-                            displayOutOfRangeError(1, 2);
-                            moduleChoice = Integer.parseInt(JOptionPane.showInputDialog(moduleChoiceMessage));
-                        }
+                    try {
+                        studentModuleNumber = Integer.parseInt(JOptionPane.showInputDialog(moduleChoiceMessage));
+                    } catch (Exception e) {
+                        showErrorMessage("Please enter a number");
+                        studentModuleNumber = Integer.parseInt(JOptionPane.showInputDialog(moduleChoiceMessage));
+                    }
 
-                        if (moduleChoice == 1) {
-//                                Get module code
-                            String moduleCode = JOptionPane.showInputDialog("Module Code");
+                    Module[] studentModules = new Module[studentModuleNumber];
+
+                    for(int i = 0; i < studentModules.length; i++){
+//                        Get module code
+                        String moduleCode = JOptionPane.showInputDialog("Module Code");
 
 //                                Get module name
-                            String moduleName = JOptionPane.showInputDialog("Module Name");
+                        String moduleName = JOptionPane.showInputDialog("Module Name");
 
 //                                Get credit unit
-                            int creditUnit = Integer.parseInt(JOptionPane.showInputDialog("Credit Unit"));
+                        int creditUnit = Integer.parseInt(JOptionPane.showInputDialog("Credit Unit"));
 
 //                                Get student marks
-                            double studentMarks = Integer.parseInt(JOptionPane.showInputDialog(studentName + " marks for " + moduleName));
+                        double studentMarks = Integer.parseInt(JOptionPane.showInputDialog(studentName + " marks for " + moduleName));
 
-                            Module addModule = new Module(moduleCode, moduleName, creditUnit, studentMarks);
-                            modules.add(addModule);
-                        }
-                    } while (moduleChoice != 2);
+                        Module addModule = new Module(moduleCode, moduleName, creditUnit, studentMarks);
+                        studentModules[i] = addModule;
+                    }
 
 //                        Create a student
-                    studentManagement.createStudent(studentCourse, studentAdminNumber, studentName, modules.toArray(new Module[modules.size()]));
+                    studentManagement.createStudent(studentCourse, studentAdminNumber, studentName, studentModules);
                 }
 
                 if (adminUserChoiceInt == 2) {

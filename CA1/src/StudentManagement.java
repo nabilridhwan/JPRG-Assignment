@@ -1,9 +1,9 @@
-import java.util.ArrayList;
-import java.util.Locale;
-
 public class StudentManagement {
 
-    private ArrayList<Student> students = new ArrayList<Student>();
+//    Create a student array with a very large number;
+    private Student[] students = new Student[100];
+    private static int studentSize = 0;
+    private Student[] finalStudentArray;
 
     public StudentManagement(){
         Module[] moduleNabil = new Module[3];
@@ -26,19 +26,28 @@ public class StudentManagement {
     }
 
     public void createStudent(String course, String adminNumber, String name,  Module[] modules){
-        this.students.add(new Student(course, adminNumber, name, modules));
+        students[studentSize] = new Student(course, adminNumber, name, modules);
+        studentSize++;
     }
 
+    public boolean studentIsNotNull(Student student){
+        return student != null;
+    }
+
+//    TODO: Replace every student array with getFinalStudentArray!!!
     public boolean removeStudent(String studentName){
-        int foundStudentIndex = -999;
-        for (int i = 0; i < students.size(); i++) {
-            if(students.get(i).getName().equalsIgnoreCase(studentName)){
-                foundStudentIndex = i;
+        int foundStudentIndex = -1;
+        for (int i = 0; i < finalStudentArray.length; i++) {
+
+            if(studentIsNotNull(students[i])){
+                if(students[i].getName().equalsIgnoreCase(studentName)){
+                    foundStudentIndex = i;
+                }
             }
         }
 
-        if(foundStudentIndex != -999){
-            this.students.remove(foundStudentIndex);
+        if(foundStudentIndex != -1){
+            students[foundStudentIndex] = null;
             return true;
         }
 
@@ -49,8 +58,10 @@ public class StudentManagement {
     public Student searchStudent(String studentName){
         Student foundStudent = new Student();
         for (Student student : students) {
-            if (student.getName().equalsIgnoreCase(studentName)) {
-                foundStudent = student;
+            if(studentIsNotNull(student)){
+                if (student.getName().equalsIgnoreCase(studentName)) {
+                    foundStudent = student;
+                }
             }
         }
 
@@ -60,15 +71,18 @@ public class StudentManagement {
     public String getStudents() {
         StringBuilder returnString = new StringBuilder();
 
-        for (int i = 0; i < students.size(); i++) {
-            returnString.append(String.format("Student #%s\nCourse\tAdmin #\tName\n%s\t\t%s\t\t%s\nModules taken:\n", (i+1), students.get(i).getCourse(), students.get(i).getAdminNumber(), students.get(i).getName()));
 
-            for (int j = 0; j < students.get(i).getModules().length; j++) {
-                Module module = students.get(i).getModules()[j];
-                returnString.append(String.format("%s. %s/%s/%s %s\n", j, module.getModuleCode(), module.getCreditUnit(), module.getModuleName(), module.getMarks()));
+        for (int i = 0; i < students.length; i++) {
+            if(studentIsNotNull(students[i])){
+                returnString.append(String.format("Student #%s\nCourse\tAdmin #\tName\n%s\t\t%s\t\t%s\nModules taken:\n", (i+1), students[i].getCourse(), students[i].getAdminNumber(), students[i].getName()));
+
+                for (int j = 0; j < students[i].getModules().length; j++) {
+                    Module module = students[i].getModules()[j];
+                    returnString.append(String.format("%s. %s/%s/%s %s\n", j, module.getModuleCode(), module.getCreditUnit(), module.getModuleName(), module.getMarks()));
+                }
+
+                returnString.append("\n");
             }
-
-            returnString.append("\n");
         }
 
         return returnString.toString();
@@ -79,13 +93,15 @@ public class StudentManagement {
         int totalNumberTakingModule = 0;
         int totalMarks = 0;
 //        Iterate through each student
-        for (Student student: this.students) {
-            for(Module studentModule: student.getModules()){
-                String mName = studentModule.getModuleName();
-                System.out.println(mName);
-                if(mName.equals(moduleName)){
-                    totalNumberTakingModule ++;
-                    totalMarks += studentModule.getMarks();
+        for (Student student: students) {
+            if(studentIsNotNull(student)){
+                for(Module studentModule: student.getModules()){
+                    String mName = studentModule.getModuleName();
+                    System.out.println(mName);
+                    if(mName.equals(moduleName)){
+                        totalNumberTakingModule ++;
+                        totalMarks += studentModule.getMarks();
+                    }
                 }
             }
         }
@@ -99,7 +115,6 @@ public class StudentManagement {
         }
     }
 
-//    TODO: Calculation error
     public String getStatistics(){
         StringBuilder returnString = new StringBuilder();
         int totalNumberOfStudents = 0;
@@ -109,26 +124,43 @@ public class StudentManagement {
 
         for(Student student : this.students){
 //            Check if the student is really a student or not
-            if(!student.getCourse().isEmpty()){
-                totalNumberOfStudents ++;
+            if(studentIsNotNull(student)){
+                if(!student.getCourse().isEmpty()){
+                    totalNumberOfStudents ++;
 
-                if(student.getGpa() > 3.5){
-                    totalNumberOfStudentAbove3PointFive++;
-                }else if(student.getGpa() < 1){
-                    totalNumberOfStudentLessThanOne++;
+                    if(student.getGpa() > 3.5){
+                        totalNumberOfStudentAbove3PointFive++;
+                    }else if(student.getGpa() < 1){
+                        totalNumberOfStudentLessThanOne++;
+                    }
                 }
             }
         }
 
-//
+        double percentageOfStudentsAbove3point5 = ((float) totalNumberOfStudentAbove3PointFive / totalNumberOfStudents) * 100;
+        double percentageOfStudentsBelow1 = ((float) totalNumberOfStudentLessThanOne / totalNumberOfStudents) * 100;
+
         returnString.append("STATISTIC\n");
         returnString.append("-----------------\n");
         returnString.append(String.format("There are %s students in total\n", totalNumberOfStudents));
         returnString.append("\n");
-        returnString.append(String.format("There is/are %s student(s) getting GPA greater than 3.5. This is %.2f %%\n", totalNumberOfStudentAbove3PointFive, (((float) totalNumberOfStudentAbove3PointFive/ (float) totalNumberOfStudents) * 100)));
+        returnString.append(String.format("There is/are %s student(s) getting GPA greater than 3.5. This is %.2f %%\n", totalNumberOfStudentAbove3PointFive, percentageOfStudentsAbove3point5));
         returnString.append("\n");
-        returnString.append(String.format("There is/are %s student(s) getting GPA less than 1. This is %.2f %%\n", totalNumberOfStudentLessThanOne, (((float)totalNumberOfStudentLessThanOne/(float)totalNumberOfStudents) * 100)));
+        returnString.append(String.format("There is/are %s student(s) getting GPA less than 1. This is %.2f %%\n", totalNumberOfStudentLessThanOne, percentageOfStudentsBelow1));
 
         return returnString.toString();
+    }
+
+    private void getFinalStudentArray(){
+        finalStudentArray = new Student[studentSize];
+
+        int index = 0;
+
+        for(Student student : students){
+            if(studentIsNotNull(student)){
+                finalStudentArray[index] = student;
+                index++;
+            }
+        }
     }
 }
