@@ -3,7 +3,6 @@ public class StudentManagement {
 //    Create a student array with a very large number;
     private Student[] students = new Student[100];
     private static int studentSize = 0;
-    private Student[] finalStudentArray;
 
     public StudentManagement(){
         Module[] moduleNabil = new Module[3];
@@ -37,17 +36,16 @@ public class StudentManagement {
 //    TODO: Replace every student array with getFinalStudentArray!!!
     public boolean removeStudent(String studentName){
         int foundStudentIndex = -1;
-        for (int i = 0; i < finalStudentArray.length; i++) {
-
-            if(studentIsNotNull(students[i])){
+        Student[] students = this.getFinalStudentArray();
+        for (int i = 0; i < students.length; i++) {
                 if(students[i].getName().equalsIgnoreCase(studentName)){
                     foundStudentIndex = i;
                 }
-            }
         }
 
         if(foundStudentIndex != -1){
             students[foundStudentIndex] = null;
+            studentSize--;
             return true;
         }
 
@@ -57,12 +55,12 @@ public class StudentManagement {
 
     public Student searchStudent(String studentName){
         Student foundStudent = new Student();
+        Student[] students = this.getFinalStudentArray();
+
         for (Student student : students) {
-            if(studentIsNotNull(student)){
                 if (student.getName().equalsIgnoreCase(studentName)) {
                     foundStudent = student;
                 }
-            }
         }
 
         return foundStudent;
@@ -71,18 +69,15 @@ public class StudentManagement {
     public String getStudents() {
         StringBuilder returnString = new StringBuilder();
 
+        Student[] students = this.getFinalStudentArray();
 
         for (int i = 0; i < students.length; i++) {
-            if(studentIsNotNull(students[i])){
                 returnString.append(String.format("Student #%s\nCourse\tAdmin #\tName\n%s\t\t%s\t\t%s\nModules taken:\n", (i+1), students[i].getCourse(), students[i].getAdminNumber(), students[i].getName()));
-
                 for (int j = 0; j < students[i].getModules().length; j++) {
                     Module module = students[i].getModules()[j];
                     returnString.append(String.format("%s. %s/%s/%s %s\n", j, module.getModuleCode(), module.getCreditUnit(), module.getModuleName(), module.getMarks()));
                 }
-
                 returnString.append("\n");
-            }
         }
 
         return returnString.toString();
@@ -92,6 +87,8 @@ public class StudentManagement {
         StringBuilder returnString = new StringBuilder();
         int totalNumberTakingModule = 0;
         int totalMarks = 0;
+        Student[] students = this.getFinalStudentArray();
+
 //        Iterate through each student
         for (Student student: students) {
             if(studentIsNotNull(student)){
@@ -121,8 +118,10 @@ public class StudentManagement {
 
         int totalNumberOfStudentAbove3PointFive = 0;
         int totalNumberOfStudentLessThanOne = 0;
+        Student[] students = this.getFinalStudentArray();
 
-        for(Student student : this.students){
+
+        for(Student student : students){
 //            Check if the student is really a student or not
             if(studentIsNotNull(student)){
                 if(!student.getCourse().isEmpty()){
@@ -151,8 +150,8 @@ public class StudentManagement {
         return returnString.toString();
     }
 
-    private void getFinalStudentArray(){
-        finalStudentArray = new Student[studentSize];
+    private Student[] getFinalStudentArray(){
+        Student[] finalStudentArray = new Student[studentSize];
 
         int index = 0;
 
@@ -162,5 +161,7 @@ public class StudentManagement {
                 index++;
             }
         }
+
+        return finalStudentArray;
     }
 }

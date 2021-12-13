@@ -87,7 +87,7 @@ public class StudentUser {
                 if (adminUserChoiceInt == 1) {
 //                        Get student course
                     String studentCourse = JOptionPane.showInputDialog("Student's Course");
-//                        Get student adminnumber
+//                        Get student admin number
                     String studentAdminNumber = JOptionPane.showInputDialog("Student's Admin Number");
 
 //                        Get student name
