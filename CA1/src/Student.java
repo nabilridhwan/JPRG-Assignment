@@ -19,8 +19,6 @@ public class Student {
         if (modules.length > 0) {
             calculateGpa();
         }
-
-        System.out.println(this.name + " : " + this.getGpa());
     }
 
     public String getCourse() {

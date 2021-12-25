@@ -106,7 +106,6 @@ public class StudentManagement {
             if(studentIsNotNull(student)){
                 for(Module studentModule: student.getModules()){
                     String mName = studentModule.getModuleName();
-                    System.out.println(mName);
                     if(mName.equals(moduleName)){
                         totalNumberTakingModule ++;
                         totalMarks += studentModule.getMarks();
@@ -167,7 +166,8 @@ public class StudentManagement {
 
         int index = 0;
 
-        for(Student student : students){
+        for(int i = 0; i < studentSize; i++){
+            Student student = this.students[i];
             if(studentIsNotNull(student)){
                 finalStudentArray[index] = student;
                 index++;
