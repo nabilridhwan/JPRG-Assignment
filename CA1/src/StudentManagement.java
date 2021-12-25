@@ -24,6 +24,7 @@ public class StudentManagement {
         this.createStudent("DIT", "2156849", "Xuan Rong", moduleXuanRong);
     }
 
+
     public void createStudent(String course, String adminNumber, String name,  Module[] modules){
         students[studentSize] = new Student(course, adminNumber, name, modules);
         studentSize++;
@@ -67,18 +68,29 @@ public class StudentManagement {
     }
 
     public String getStudents() {
-        StringBuilder returnString = new StringBuilder();
+        StringBuilder returnString = new StringBuilder("<html><head><style>table{text-align: center; border-collapse: collapse;}th{border: 1px solid black;} td{border: 1px solid black;}</style</head><body><table>");
 
         Student[] students = this.getFinalStudentArray();
 
         for (int i = 0; i < students.length; i++) {
-                returnString.append(String.format("Student #%s\nCourse\tAdmin #\tName\n%s\t\t%s\t\t%s\nModules taken:\n", (i+1), students[i].getCourse(), students[i].getAdminNumber(), students[i].getName()));
-                for (int j = 0; j < students[i].getModules().length; j++) {
+            returnString.append(String.format("<tr><th colspan='5'>Student #%s</th></tr>", (i+1)));
+            returnString.append("<tr><th>Course</th><th>Admin #</th><th colspan='3'>Name</th></tr>");
+                returnString.append(String.format("<tr><td>"+students[i].getCourse()+"</td><td>"+students[i].getAdminNumber()+"</td><td colspan='3'>"+students[i].getName()+"</td></tr>"));
+
+            returnString.append("<tr><th colspan='5'>Module Taken</th></tr>");
+            returnString.append(String.format("<tr><td>No.</td><td>Module Code</td><td>Module Credit Unit</td><td>Module Name</td><td>Module Marks</td></tr>"));
+
+            for (int j = 0; j < students[i].getModules().length; j++) {
                     Module module = students[i].getModules()[j];
-                    returnString.append(String.format("%s. %s/%s/%s %s\n", j, module.getModuleCode(), module.getCreditUnit(), module.getModuleName(), module.getMarks()));
+
+                returnString.append(String.format("<tr><td>" + (j+1) + "</td><td>" + module.getModuleCode() + "</td><td>" + module.getCreditUnit() + "</td><td>" + module.getModuleName() + "</td><td>" + module.getMarks() +"</td></tr>"));
+//                returnString.append(String.format("%s. %s/%s/%s %s\n", j, module.getModuleCode(), module.getCreditUnit(), module.getModuleName(), module.getMarks()));
                 }
-                returnString.append("\n");
+                returnString.append("<br /> <br />");
         }
+
+        returnString.append("</table></body></html>");
+
 
         return returnString.toString();
     }
