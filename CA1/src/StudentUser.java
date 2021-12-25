@@ -18,22 +18,26 @@ public class StudentUser {
         String studentName = JOptionPane.showInputDialog("Enter the Student name to search");
         Student foundStudent = studentManagement.searchStudent(studentName);
 
-        // A student is found
+        // A student is found (because the GPA won't be 0 and the name won't be empty)
         if (foundStudent.getGpa() != 0 && !foundStudent.getName().isEmpty()) {
 
 //            TODO: Fix table styling
             StringBuilder returnString = new StringBuilder("<html><head><style>table{text-align: center; border-collapse: collapse;}th{border: 1px solid black;} td{border: 1px solid black;}</style</head><body><table>");
-            returnString.append(String.format("Course\tAdmin #\tName\n%s\t\t%s\t\t%s\n\nModules taken:\n",foundStudent.getCourse(), foundStudent.getAdminNumber(), foundStudent.getName()));
-            returnString.append(String.format("<tr><th>Course</th>\t<th>Admin #</th>\t<th>Name</th>"));
-            returnString.append(String.format("<th>%s</th><th>%s</th><th>%s</th>", foundStudent.getCourse(), foundStudent.getAdminNumber(), foundStudent.getName()));
+            returnString.append(String.format("<tr><th>Course</th>\t<th>Admin #</th>\t<th colspan='3'>Name</th></tr>"));
+            returnString.append(String.format("<tr><th>%s</th><th>%s</th><th colspan='3'>%s</th></tr>", foundStudent.getCourse(), foundStudent.getAdminNumber(), foundStudent.getName()));
 
+            returnString.append(String.format("<tr> <th colspan='5'>Modules Taken</th></tr>"));
+//            Display student's module
             for (int j = 0; j < foundStudent.getModules().length; j++) {
                 Module module = foundStudent.getModules()[j];
-                returnString.append(String.format("%s. %s/%s/%s %s\n", j, module.getModuleCode(),
+
+
+                returnString.append("<tr><th>Index</th> <th>Module Code</th> <th>Credit Unit</th> <th>Module Name</th> <th>Module Marks</th> </tr>");
+                returnString.append(String.format("<tr> <td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td> <td>%s</td> </th>", j, module.getModuleCode(),
                         module.getCreditUnit(), module.getModuleName(), module.getMarks()));
             }
 
-            returnString.append(String.format("Your GPA: %f", foundStudent.getGpa()));
+            returnString.append(String.format("<tr><td colspan='5'>Your GPA: %f</td></td>", foundStudent.getGpa()));
 
             returnString.append("</table></body></html>");
 
@@ -155,7 +159,8 @@ public class StudentUser {
         }
     }
 
-    private static boolean checkOutOfBounds(int choice, int min, int max, String message) {
+    private static boolean checkOutOfBounds(int choice, int
+            min, int max, String message) {
         // Checks if the user choice is one of the menu
         return choice < min || choice > max;
     }
