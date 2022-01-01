@@ -1,32 +1,36 @@
+import java.util.ArrayList;
+
 public class StudentManagement {
 
 //    Create a student array with a very large number;
     private Student[] students = new Student[100];
     private static int studentSize = 0;
+    private static int insertStudentIndex;
 
     public StudentManagement(){
-        Module[] moduleNabil = new Module[3];
-        moduleNabil[0] = new Module("ST1013", "FOP", 5, 80);
-        moduleNabil[1] = new Module("ST1014", "MATH", 6, 80);
-        moduleNabil[2] = new Module("ST1015", "FOC", 5, 70);
-        this.createStudent("DIT", "2007421", "Nabil", moduleNabil);
+        Module[] moduleJohn = new Module[2];
+        moduleJohn[0] = new Module("SP109B", "ECG", 2, 88);
+        moduleJohn[1] = new Module("ST0502", "FOP", 6, 80.5);
+        this.createStudent("DISM", "P111111", "John Tan", moduleJohn);
 
-        Module[] moduleLincoln = new Module[3];
-        moduleLincoln[0] = new Module("ST1013", "FOP", 2, 100);
-        moduleLincoln[1] = new Module("ST1014", "MATH", 5, 10);
-        moduleLincoln[2] = new Module("ST1015", "JPRG", 5, 10);
-        this.createStudent("DIT", "2156849", "Lincoln",  moduleLincoln);
+        Module[] modulePeter = new Module[4];
+        modulePeter[0] = new Module("ST0501", "FED", 5, 90.5);
+        modulePeter[1] = new Module("ST0502", "FOP", 6, 78);
+        modulePeter[2] = new Module("ST2413", "FOC", 4, 65.5);
+        modulePeter[3] = new Module("SP108B", "ECG", 4, 81.0);
+        this.createStudent("DAAA", "P222222", "Peter Goh",  modulePeter);
 
-        Module[] moduleXuanRong = new Module[3];
-        moduleXuanRong[0] = new Module("ST1013", "FOP", 5, 75);
-        moduleXuanRong[1] = new Module("ST1014", "MATH", 5, 80);
-        moduleXuanRong[2] = new Module("ST1015", "JPRG", 5, 70);
-        this.createStudent("DIT", "2156849", "Xuan Rong", moduleXuanRong);
+        Module[] moduleJack = new Module[3];
+        moduleJack[0] = new Module("ST0503", "BED", 6, 55.5);
+        moduleJack[1] = new Module("ST0504", "MAD", 5, 86);
+        moduleJack[2] = new Module("ST0502", "FOP", 6, 66);
+        this.createStudent("DIT", "P333333", "Jack Lim", moduleJack);
     }
 
 
     public void createStudent(String course, String adminNumber, String name,  Module[] modules){
-        students[studentSize] = new Student(course, adminNumber, name, modules);
+        insertStudentIndex = findIndexOfLastStudent();
+        students[insertStudentIndex] = new Student(course, adminNumber, name, modules);
         studentSize++;
     }
 
@@ -34,24 +38,15 @@ public class StudentManagement {
         return student != null;
     }
 
-//    TODO: Replace every student array with getFinalStudentArray!!!
     public boolean removeStudent(String studentName){
-        int foundStudentIndex = -1;
-        Student[] students = this.getFinalStudentArray();
-        for (int i = 0; i < students.length; i++) {
-                if(students[i].getName().equalsIgnoreCase(studentName)){
-                    foundStudentIndex = i;
-                }
-        }
+        int foundStudentIndex = findIndexOfStudent(studentName);
 
         if(foundStudentIndex != -1){
             students[foundStudentIndex] = null;
             studentSize--;
             return true;
         }
-
         return false;
-
     }
 
     public Student searchStudent(String studentName){
@@ -65,6 +60,50 @@ public class StudentManagement {
         }
 
         return foundStudent;
+    }
+
+    public void modifyStudent(int studentIndex, int type, String newValue){
+        Student student = this.students[studentIndex];
+        switch (type) {
+            case 1:
+                student.setCourse(newValue);
+                break;
+            case 2:
+                student.setAdminNumber(newValue);
+                break;
+            case 3:
+                student.setName(newValue);
+                break;
+        }
+    }
+
+//    This function tells the program where to insert the student from
+    private int findIndexOfLastStudent(){
+        int highestIndexNotNull = 0;
+//        Go through each student
+        for(int i = 0; i < students.length; i++){
+            Student student = students[i];
+//        If each student is not null, get their index
+            if(studentIsNotNull(student)){
+                highestIndexNotNull = i;
+            }
+        }
+
+//        Return the index + 1, that will be the index to insert from
+        return highestIndexNotNull + 1;
+    }
+
+    public int findIndexOfStudent(String studentName){
+        int foundStudentIndex = -1;
+        for (int i = 0; i < students.length; i++) {
+            if(studentIsNotNull(students[i])) {
+                if (students[i].getName().equalsIgnoreCase(studentName)) {
+                    foundStudentIndex = i;
+                }
+            }
+        }
+
+        return foundStudentIndex;
     }
 
     public String getStudents() {
@@ -103,7 +142,6 @@ public class StudentManagement {
 
 //        Iterate through each student
         for (Student student: students) {
-            if(studentIsNotNull(student)){
                 for(Module studentModule: student.getModules()){
                     String mName = studentModule.getModuleName();
                     if(mName.equals(moduleName)){
@@ -111,7 +149,6 @@ public class StudentManagement {
                         totalMarks += studentModule.getMarks();
                     }
                 }
-            }
         }
 
         if(totalNumberTakingModule != 0){
@@ -132,9 +169,8 @@ public class StudentManagement {
         Student[] students = this.getFinalStudentArray();
 
 
-        for(Student student : students){
+        for(Student student : this.getFinalStudentArray()){
 //            Check if the student is really a student or not
-            if(studentIsNotNull(student)){
                 if(!student.getCourse().isEmpty()){
                     totalNumberOfStudents ++;
 
@@ -144,7 +180,6 @@ public class StudentManagement {
                         totalNumberOfStudentLessThanOne++;
                     }
                 }
-            }
         }
 
         double percentageOfStudentsAbove3point5 = ((float) totalNumberOfStudentAbove3PointFive / totalNumberOfStudents) * 100;
@@ -161,12 +196,77 @@ public class StudentManagement {
         return returnString.toString();
     }
 
+    public String getGPAStatistics() {
+        StringBuilder returnString = new StringBuilder();
+        double lowestGPA = 4.0;
+        double highestGPA = 0.0;
+
+        Student lowestGPAStudent = null;
+        Student highestGPAStudent = null;
+
+        Student[] students = this.getFinalStudentArray();
+        for(int i = 0; i < students.length; i++){
+            Student student = students[i];
+            if(student.getGpa() < lowestGPA){
+                lowestGPA = student.getGpa();
+                lowestGPAStudent = student;
+            }
+
+            if(student.getGpa() > highestGPA) {
+                highestGPA = student.getGpa();
+                highestGPAStudent = student;
+            }
+        }
+
+        returnString.append("GPA STATISTICS\n");
+        returnString.append("-----------------\n");
+        returnString.append(String.format("The lowest GPA is %.4f by %s from %s\n", lowestGPA, lowestGPAStudent.getName(), lowestGPAStudent.getCourse()));
+        returnString.append(String.format("The highest GPA is %.4f by %s from %s\n", highestGPA, highestGPAStudent.getName(), highestGPAStudent.getCourse()));
+
+        return returnString.toString();
+
+    }
+
+//    Return the number of students in a certain course
+    public String getCourseStatistics(){
+        StringBuilder returnString = new StringBuilder();
+        ArrayList<String> courseList = new ArrayList<>();
+
+        for(Student student : this.getFinalStudentArray()) {
+            if(!student.getCourse().isEmpty()){
+//                Check if the course is already in the list
+                if(!courseList.contains(student.getCourse())){
+                    courseList.add(student.getCourse());
+                }
+            }
+        }
+
+
+        int[] numberOfStudentTakingCourse = new int[courseList.size()];
+        for(Student student : this.getFinalStudentArray()) {
+            int index = courseList.indexOf(student.getCourse());
+            numberOfStudentTakingCourse[index]++;
+        }
+
+        returnString.append("COURSE STATISTICS\n");
+        returnString.append("-----------------\n");
+        returnString.append("Course : Number of Students\n");
+        returnString.append("-----------------\n");
+
+        for(int i = 0; i < courseList.size(); i++){
+            returnString.append(String.format("%s : %s\n", courseList.get(i), numberOfStudentTakingCourse[i]));
+        }
+
+        return returnString.toString();
+
+    }
+
     private Student[] getFinalStudentArray(){
         Student[] finalStudentArray = new Student[studentSize];
 
         int index = 0;
 
-        for(int i = 0; i < studentSize; i++){
+        for(int i = 0; i < students.length; i++){
             Student student = this.students[i];
             if(studentIsNotNull(student)){
                 finalStudentArray[index] = student;
