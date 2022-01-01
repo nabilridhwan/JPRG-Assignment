@@ -190,14 +190,15 @@ public class StudentUser {
                     String moduleChoiceMessage = String.format("How many modules does %s have?", studentName);
                     String studentModuleNumberChoice = JOptionPane.showInputDialog(moduleChoiceMessage);
 
-                    if (studentModuleNumberChoice == null) {
-                        break;
-                    }
-
 //                        Do a check if it is an integer or is empty, if any of these conditions are met, enter the while loop
                     while (studentModuleNumberChoice != null && (!checkIfInputIsInt(studentModuleNumberChoice) || studentModuleNumberChoice.isEmpty())) {
                         ErrorHandler.showErrorMessage("Do not leave it blank or item is not a number!");
                         studentModuleNumberChoice = JOptionPane.showInputDialog(moduleChoiceMessage);
+                    }
+
+                    while(studentModuleNumberChoice != null && studentModuleNumberChoice.equals("0")){
+                       ErrorHandler.showErrorMessage("Student must have at least one module!");
+                       studentModuleNumberChoice = JOptionPane.showInputDialog(moduleChoiceMessage);
                     }
 
                     if (studentModuleNumberChoice == null) break;
