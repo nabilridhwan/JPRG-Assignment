@@ -117,7 +117,7 @@ public class StudentUser {
         // User does not want to exit
         if (secretPassword != null) {
             // do while loop for admin user choice
-            String mainAdminMessage = "Welcome to the admin page\n1. Add student\n2. Delete student by name\n3. Modify Student Particulars\n4. Change admin password\n5. Exit";
+            String mainAdminMessage = "Welcome to the admin page\n1. Add student\n2. Delete student by name\n3. Modify Student Particulars\n4. Change admin password\n5. Modify student's modules\n6. Exit";
             String adminUserChoice;
 
             do {
@@ -132,10 +132,10 @@ public class StudentUser {
 
                 // Check if the user is out of bounds, meaning if the user enters any option
                 // they are not supposed to enter
-                while (!isInputWithinBounds(adminUserChoice, 5)) {
+                while (!isInputWithinBounds(adminUserChoice, 6)) {
 
                     // Throw out an error
-                    ErrorHandler.displayOutOfRangeError(1, 5);
+                    ErrorHandler.displayOutOfRangeError(1, 6);
 
                     // Ask for the input again but this time it should be set to the adminUserChoice
                     adminUserChoice = JOptionPane.showInputDialog(mainAdminMessage);
@@ -351,7 +351,92 @@ public class StudentUser {
                     break;
                 }
 
-            } while (!adminUserChoice.equals("5"));
+//                Modify student's module
+                if(adminUserChoiceInt == 5){
+                    String studentNameEditMessage = "Enter the student's name you want to modify";
+                    String studentNameToEdit = JOptionPane.showInputDialog(studentNameEditMessage);
+                    while(studentNameToEdit != null && studentNameToEdit.isEmpty()) {
+                        ErrorHandler.showErrorMessage("Don't leave it blank!");
+                        studentNameToEdit = JOptionPane.showInputDialog(studentNameEditMessage);
+                    }
+
+                    if(studentNameToEdit == null) break;
+
+                    Student foundStudent = studentManagement.searchStudent(studentNameToEdit);
+
+                    if(foundStudent.getGpa() != 0.0 && !foundStudent.getAdminNumber().equals("")){
+
+
+                        StringBuilder returnString = new StringBuilder("<html><head><style>table{text-align: center; border-collapse: collapse;}th{border: 1px solid black;} td{border: 1px solid black;}</style</head><body><table>");
+                        returnString.append(String.format("<tr><th colspan='5'>Module Taken by %s</th></tr>", foundStudent.getName()));
+                        returnString.append("<tr><td>No.</td><td>Module Code</td><td>Module Credit Unit</td><td>Module Name</td><td>Module Marks</td></tr>");
+                        returnString.append(studentManagement.getModulesString(foundStudent));
+
+                        returnString.append("</table><p>Enter the index of the module you want to modify</p>");
+                        returnString.append("</body></html>");
+
+                        String indexOfModuleToEdit = JOptionPane.showInputDialog(returnString);
+                        while(indexOfModuleToEdit != null && !indexOfModuleToEdit.matches("^[1-" + foundStudent.getModules().length +"]+$")){
+                           ErrorHandler.showErrorMessage("Invalid index!");
+                           indexOfModuleToEdit = JOptionPane.showInputDialog(returnString);
+                        }
+
+                        if(indexOfModuleToEdit == null) break;
+
+                        int indexOfModuleToEditInt = Integer.parseInt(indexOfModuleToEdit);
+
+                        String moduleChoiceMessage = "What do you want to edit?\n1. Module Code\n2. Module Name\n3. Credit Unit\n4. Marks";
+                        String moduleChoice = JOptionPane.showInputDialog(moduleChoiceMessage);
+
+                        while(moduleChoice != null && !isInputWithinBounds(moduleChoice,4)){
+                            ErrorHandler.showErrorMessage("Enter an option between 1 and 4!");
+                           moduleChoice = JOptionPane.showInputDialog(moduleChoiceMessage);
+                        }
+
+                        int moduleChoiceInt = Integer.parseInt(moduleChoice);
+
+                        Module moduleToEdit = foundStudent.getModules()[indexOfModuleToEditInt - 1];
+
+                        if(moduleChoiceInt == 1){
+                            String newModuleCode = JOptionPane.showInputDialog("Enter the new module code");
+                            if(newModuleCode == null) break;
+                            moduleToEdit.setModuleCode(newModuleCode);
+                        }
+
+                        if(moduleChoiceInt == 2){
+                            String newModuleName = JOptionPane.showInputDialog("Enter the new module name");
+                            if(newModuleName == null) break;
+                            moduleToEdit.setModuleName(newModuleName);
+                        }
+
+                        if(moduleChoiceInt == 3){
+                            String newCreditUnit = JOptionPane.showInputDialog("Enter the new credit unit");
+                            while(newCreditUnit != null && !checkIfInputIsInt(newCreditUnit)){
+                                ErrorHandler.showErrorMessage("Enter a number!");
+                                newCreditUnit = JOptionPane.showInputDialog("Enter the new credit unit");
+                            }
+                            if(newCreditUnit == null) break;
+                            moduleToEdit.setCreditUnit(Integer.parseInt(newCreditUnit));
+                        }
+
+                        if(moduleChoiceInt == 4){
+                            String newMarks = JOptionPane.showInputDialog("Enter the new marks");
+                            while(newMarks!= null && !checkIfInputIsDouble(newMarks)){
+                                ErrorHandler.showErrorMessage("Enter a number!");
+                                newMarks = JOptionPane.showInputDialog("Enter the new marks");
+                            }
+                            if(newMarks == null) break;
+                            moduleToEdit.setMarks(Double.parseDouble(newMarks));
+                        }
+
+                        JOptionPane.showMessageDialog(null, "Module modified successfully!");
+
+                    }else{
+                        ErrorHandler.showErrorMessage("Student not found!");
+                    }
+                }
+
+            } while (!adminUserChoice.equals("6"));
         }
 
     }

@@ -15,10 +15,6 @@ public class Student {
         this.name = name;
         this.modules = modules;
 
-//        Automatically calculate gpa
-        if (modules.length > 0) {
-            calculateGpa();
-        }
     }
 
     public String getCourse() {
@@ -35,6 +31,7 @@ public class Student {
 
     //    Proper calculation of GPA.
     private void calculateGpa() {
+        System.out.println("Calculating GPA...");
         //        Get all the modules
         int totalCreditUnits = 0;
         double numerator = 0;
@@ -59,6 +56,10 @@ public class Student {
     }
 
     public double getGpa() {
+        if(modules.length > 0){
+            calculateGpa();
+        }
+
         return gpa;
     }
 
