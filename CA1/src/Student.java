@@ -1,4 +1,9 @@
-package CA1;
+/*
+    Class:          DIT/FT/1B/05
+    Admin Number:   P2007421
+    Name:           Nabil Ridhwanshah Bin Rosli
+ */
+
 
 public class Student {
     private String course;
@@ -31,7 +36,7 @@ public class Student {
         return name;
     }
 
-    //    Proper calculation of GPA.
+    //   Calculation of GPA
     private void calculateGpa() {
         //        Get all the modules
         int totalCreditUnits = 0;
@@ -57,6 +62,8 @@ public class Student {
     }
 
     public double getGpa() {
+
+//        Calls the calculateGpa method to calculate the GPA everytime GPA is count, so the GPA is always up to date
         if(modules.length > 0){
             calculateGpa();
         }

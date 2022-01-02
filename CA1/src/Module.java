@@ -1,4 +1,9 @@
-package CA1;
+/*
+    Class:          DIT/FT/1B/05
+    Admin Number:   P2007421
+    Name:           Nabil Ridhwanshah Bin Rosli
+ */
+
 
 public class Module {
     private String moduleCode;
