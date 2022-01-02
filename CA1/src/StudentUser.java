@@ -239,7 +239,7 @@ public class StudentUser {
                         }
 
 //                        If the student module number is not null and if the choice is 0 (meaning the student has 0 modules), then show error message
-                        while (studentModuleNumberChoice != null && studentModuleNumberChoice.equals("0")) {
+                        while (studentModuleNumberChoice != null && !studentModuleNumberChoice.matches("^[1-10]$")) {
                             ErrorHandler.showErrorMessage("Student must have at least one module!");
                             studentModuleNumberChoice = JOptionPane.showInputDialog(moduleChoiceMessage);
                         }
@@ -248,8 +248,8 @@ public class StudentUser {
                         if (studentModuleNumberChoice == null) break;
 
                         //                      If it breaks, meaning that it is an integer, and it is not empty, hence we can convert it into an integer
-                        int studentModuleNumber = Integer.parseInt(studentModuleNumberChoice);
 
+                        int studentModuleNumber = Integer.parseInt(studentModuleNumberChoice);
 
 //                        Create a new array of modules
                         Module[] studentModules = new Module[studentModuleNumber];
@@ -279,7 +279,7 @@ public class StudentUser {
                             String creditUnit = JOptionPane.showInputDialog(String.format("Credit Unit for %s", moduleName));
 
 //                        Do a check if it is an integer or is empty, if any of these conditions are met, enter the while loop
-                            while (creditUnit == null || !checkIfInputIsInt(creditUnit) || creditUnit.isEmpty()) {
+                            while (creditUnit == null || !checkIfInputIsInt(creditUnit) || creditUnit.isEmpty() || !creditUnit.matches("^[1-9]$")) {
                                 ErrorHandler.showErrorMessage("Invalid input!");
                                 creditUnit = JOptionPane.showInputDialog(String.format("Credit Unit for %s", moduleName));
                             }
@@ -290,8 +290,13 @@ public class StudentUser {
                             // Get student marks
                             String studentMarks = JOptionPane.showInputDialog(studentName + " marks for " + moduleName);
 
-                            while (studentMarks == null || !checkIfInputIsDouble(studentMarks) || studentMarks.isEmpty()) {
+                            while (studentMarks == null || !checkIfInputIsDouble(studentMarks) || studentMarks.isEmpty() ) {
                                 ErrorHandler.showErrorMessage("Invalid input!");
+                                studentMarks = JOptionPane.showInputDialog(studentName + " marks for " + moduleName);
+                            }
+
+                            while(!studentMarks.matches("^[0-9][0-9]?$|^100$")){
+                                ErrorHandler.showErrorMessage("Student must have between 0 to 100");
                                 studentMarks = JOptionPane.showInputDialog(studentName + " marks for " + moduleName);
                             }
 
@@ -554,6 +559,11 @@ public class StudentUser {
                                         newCreditUnit = JOptionPane.showInputDialog("Enter the new credit unit");
                                     }
 
+                                    while(newCreditUnit != null && !newCreditUnit.matches("^[1-9]+$")) {
+                                        ErrorHandler.showErrorMessage("Enter a number between 1 and 9");
+                                        newCreditUnit = JOptionPane.showInputDialog("Enter the new credit unit");
+                                    }
+
 //                                    If cancel is pressed, break the loop
                                     if (newCreditUnit == null) break;
                                     moduleToEdit.setCreditUnit(Integer.parseInt(newCreditUnit));
@@ -567,6 +577,11 @@ public class StudentUser {
 //                                    Check the formatting
                                     while (newMarks != null && !checkIfInputIsDouble(newMarks)) {
                                         ErrorHandler.showErrorMessage("Enter a number!");
+                                        newMarks = JOptionPane.showInputDialog("Enter the new marks");
+                                    }
+
+                                    while(newMarks != null && !newMarks.matches("^[0-9][0-9]?$|^100$")) {
+                                        ErrorHandler.showErrorMessage("Enter a number between 0 and 100!");
                                         newMarks = JOptionPane.showInputDialog("Enter the new marks");
                                     }
 
@@ -629,6 +644,11 @@ public class StudentUser {
                                         moduleNumber = JOptionPane.showInputDialog("Enter the number of module you want to add");
                                     }
 
+                                    while(moduleNumber != null && !moduleNumber.matches("^[1-9]$")){
+                                        ErrorHandler.showErrorMessage("Must be a number between 1 and 9!");
+                                        moduleNumber = JOptionPane.showInputDialog("Enter the number of module you want to add");
+                                    }
+
                                     if (moduleNumber == null) break;
 
 //                                   Convert to int
@@ -662,7 +682,7 @@ public class StudentUser {
                                         String creditUnit = JOptionPane.showInputDialog(String.format("Credit Unit for %s", moduleName));
 
 //                        Do a check if it is an integer or is empty, if any of these conditions are met, enter the while loop
-                                        while (creditUnit == null || !checkIfInputIsInt(creditUnit) || creditUnit.isEmpty()) {
+                                        while (creditUnit == null || !checkIfInputIsInt(creditUnit) || creditUnit.isEmpty() || !creditUnit.matches("^[1-9]$")) {
                                             ErrorHandler.showErrorMessage("Invalid input!");
                                             creditUnit = JOptionPane.showInputDialog(String.format("Credit Unit for %s", moduleName));
                                         }
@@ -673,7 +693,7 @@ public class StudentUser {
                                         // Get student marks
                                         String studentMarks = JOptionPane.showInputDialog(foundStudent.getName() + " marks for " + moduleName);
 
-                                        while (studentMarks == null || !checkIfInputIsDouble(studentMarks) || studentMarks.isEmpty()) {
+                                        while (studentMarks == null || !checkIfInputIsDouble(studentMarks) || studentMarks.isEmpty() || !studentMarks.matches("^[0-9][0-9]?$|^100$")) {
                                             ErrorHandler.showErrorMessage("Invalid input!");
                                             studentMarks = JOptionPane.showInputDialog(foundStudent.getName() + " marks for " + moduleName);
                                         }
@@ -753,7 +773,7 @@ public class StudentUser {
         do { // Start of main program loop
 
 //            Main menu
-            userChoice = JOptionPane.showInputDialog(mainMessage);
+            userChoice = JOptionPane.showInputDialog(null, mainMessage, "Mini Student System", JOptionPane.QUESTION_MESSAGE);
 
 //            Check if user clicks cancel, if so, exit the program
             if (userChoice == null) break;

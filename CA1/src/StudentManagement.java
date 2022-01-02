@@ -176,10 +176,18 @@ public class StudentManagement {
             returnString.append("<tr><th>Course</th><th>Admin #</th><th colspan='3'>Name</th></tr>");
             returnString.append(getStudentString(students[i]));
 
-            returnString.append("<tr><th colspan='5'>Module(s) Taken</th></tr>");
-            returnString.append("<tr><td>No.</td><td>Module Code</td><td>Module Credit Unit</td><td>Module Name</td><td>Module Marks</td></tr>");
 
-            returnString.append(getModulesString(students[i]));
+//            Show the modules taken
+            returnString.append("<tr><th colspan='5'>Module(s) Taken</th></tr>");
+
+//            If the student has modules, show it otherwise show no modules
+            if (students[i].getModules().length > 0) {
+                returnString.append("<tr><td>No.</td><td>Module Code</td><td>Module Credit Unit</td><td>Module Name</td><td>Module Marks</td></tr>");
+                returnString.append(getModulesString(students[i]));
+            }else{
+                returnString.append("<tr><td colspan='5'>No modules</td></tr>");
+            }
+
             returnString.append("<tr><td colspan='5' style='border: 0'></td></tr>");
         }
 
@@ -254,7 +262,7 @@ public class StudentManagement {
         return returnString.toString();
     }
 
-//    get GPA statistics which shows highest and lowest gpa of the students
+    //    get GPA statistics which shows highest and lowest gpa of the students
     public String getGPAStatistics() {
         StringBuilder returnString = new StringBuilder();
         double lowestGPA = 4.0;
@@ -286,7 +294,7 @@ public class StudentManagement {
 
     }
 
-//    Method to remove a module from student
+    //    Method to remove a module from student
     public void removeModule(Student student, int indexToDelete) {
         Module[] studentModules = student.getModules();
 
@@ -299,7 +307,7 @@ public class StudentManagement {
 //        The index is kept track to set to finalStudentModules
         int index = 0;
 
-        if(moduleLength != 0){
+        if (moduleLength != 0) {
             for (int i = 0; i < studentModules.length; i++) {
 
 //            As long as the index is not the index to delete, set the module to finalStudentModules
@@ -349,7 +357,7 @@ public class StudentManagement {
 
     }
 
-//    This method will return a final array containing students that are not null
+    //    This method will return a final array containing students that are not null
 //    It leverages from the studentSize that we kept track from adding/removing students
     private Student[] getFinalStudentArray() {
         Student[] finalStudentArray = new Student[studentSize];
@@ -367,19 +375,19 @@ public class StudentManagement {
         return finalStudentArray;
     }
 
-//    This method allows users to add modules for users
+    //    This method allows users to add modules for users
     public void addModules(Student student, Module[] modules) {
         Module[] currentStudentModules = student.getModules();
         Module[] newStudentModules = new Module[currentStudentModules.length + modules.length];
 
         int index = 0;
 
-        for(int i = 0; i < currentStudentModules.length; i++){
-           newStudentModules[index] = currentStudentModules[i];
-           index++;
+        for (int i = 0; i < currentStudentModules.length; i++) {
+            newStudentModules[index] = currentStudentModules[i];
+            index++;
         }
 
-        for(int i = 0; i < modules.length; i++){
+        for (int i = 0; i < modules.length; i++) {
             newStudentModules[index] = modules[i];
             index++;
         }
