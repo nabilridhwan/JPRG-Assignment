@@ -1,3 +1,5 @@
+package CA1;
+
 import java.util.ArrayList;
 
 public class StudentManagement {
@@ -59,17 +61,20 @@ public class StudentManagement {
             }
         }
 
+        if(foundStudent.getName().equalsIgnoreCase("")) {
+            return null;
+        }
+
         return foundStudent;
     }
 
-    public void modifyStudent(int studentIndex, int type, String newValue) {
-        Student student = this.students[studentIndex];
+    public void modifyStudent(Student student, int type, String newValue) {
         switch (type) {
             case 1:
                 student.setCourse(newValue);
                 break;
             case 2:
-                student.setAdminNumber(newValue);
+                student.setAdminNumber(newValue.toUpperCase());
                 break;
             case 3:
                 student.setName(newValue);
@@ -118,6 +123,13 @@ public class StudentManagement {
         return returnString.toString();
     }
 
+    public String getStudentString(Student student){
+        StringBuilder returnString = new StringBuilder();
+        returnString.append(String.format("<tr><td>" + student.getCourse() + "</td><td>" + student.getAdminNumber() + "</td><td colspan='3'>" + student.getName() + "</td></tr>"));
+
+        return returnString.toString();
+    }
+
     public String getStudents() {
         StringBuilder returnString = new StringBuilder("<html><head><style>table{text-align: center; border-collapse: collapse;}th{border: 1px solid black;} td{border: 1px solid black;}</style</head><body><table>");
 
@@ -125,13 +137,15 @@ public class StudentManagement {
 
         for (int i = 0; i < students.length; i++) {
             returnString.append(String.format("<tr><th colspan='5'>Student #%s</th></tr>", (i + 1)));
-            returnString.append("<tr><th>Course</th><th>Admin #</th><th colspan='3'>Name</th></tr>");
-            returnString.append(String.format("<tr><td>" + students[i].getCourse() + "</td><td>" + students[i].getAdminNumber() + "</td><td colspan='3'>" + students[i].getName() + "</td></tr>"));
 
-            returnString.append("<tr><th colspan='5'>Module Taken</th></tr>");
+            returnString.append("<tr><th>Course</th><th>Admin #</th><th colspan='3'>Name</th></tr>");
+            returnString.append(getStudentString(students[i]));
+
+            returnString.append("<tr><th colspan='5'>Module(s) Taken</th></tr>");
             returnString.append("<tr><td>No.</td><td>Module Code</td><td>Module Credit Unit</td><td>Module Name</td><td>Module Marks</td></tr>");
 
             returnString.append(getModulesString(students[i]));
+            returnString.append("<tr><td colspan='5' style='border: 0'></td></tr>");
         }
 
         returnString.append("</table></body></html>");
@@ -231,6 +245,23 @@ public class StudentManagement {
 
         return returnString.toString();
 
+    }
+
+    public void removeModule(Student student,int indexToDelete){
+        Module[] studentModules = student.getModules();
+        int moduleLength = studentModules.length - 1;
+        Module[] finalStudentModules = new Module[moduleLength];
+
+        int index = 0;
+
+        for(int i = 0; i < studentModules.length; i++){
+            if(indexToDelete != i){
+                finalStudentModules[index] = studentModules[i];
+                index++;
+            }
+        }
+
+        student.setModules(finalStudentModules);
     }
 
     //    Return the number of students in a certain course

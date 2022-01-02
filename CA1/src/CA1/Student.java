@@ -1,3 +1,5 @@
+package CA1;
+
 public class Student {
     private String course;
     private String adminNumber;
@@ -31,7 +33,6 @@ public class Student {
 
     //    Proper calculation of GPA.
     private void calculateGpa() {
-        System.out.println("Calculating GPA...");
         //        Get all the modules
         int totalCreditUnits = 0;
         double numerator = 0;

@@ -1,3 +1,5 @@
+package CA1;
+
 import javax.swing.*;
 
 public class ErrorHandler {

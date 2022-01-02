@@ -1,3 +1,5 @@
+package CA1;
+
 public class Module {
     private String moduleCode;
     private String moduleName;
