@@ -4,7 +4,9 @@
     Name:           Nabil Ridhwanshah Bin Rosli
  */
 
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class StudentManagement {
 
@@ -14,23 +16,78 @@ public class StudentManagement {
 
     //    The constructor must add students to the array
     public StudentManagement() {
-        Module[] moduleJohn = new Module[2];
-        moduleJohn[0] = new Module("SP109B", "ECG", 2, 88);
-        moduleJohn[1] = new Module("ST0502", "FOP", 6, 80.5);
-        this.createStudent("DISM", "P111111", "John Tan", moduleJohn);
+        this.readStudents();
+    }
 
-        Module[] modulePeter = new Module[4];
-        modulePeter[0] = new Module("ST0501", "FED", 5, 90.5);
-        modulePeter[1] = new Module("ST0502", "FOP", 6, 78);
-        modulePeter[2] = new Module("ST2413", "FOC", 4, 65.5);
-        modulePeter[3] = new Module("SP108B", "ECG", 4, 81.0);
-        this.createStudent("DAAA", "P222222", "Peter Goh", modulePeter);
+    public void readStudents() {
+        //        Read from file
+        try {
+            String filePath = new File("student.txt").getAbsolutePath();
+            FileInputStream fileInputStream = new FileInputStream(filePath);
+            Scanner read = new Scanner(fileInputStream);
 
-        Module[] moduleJack = new Module[3];
-        moduleJack[0] = new Module("ST0503", "BED", 6, 55.5);
-        moduleJack[1] = new Module("ST0504", "MAD", 5, 86);
-        moduleJack[2] = new Module("ST0502", "FOP", 6, 66);
-        this.createStudent("DIT", "P333333", "Jack Lim", moduleJack);
+            String numberOfStudents = read.nextLine();
+
+            System.out.println(numberOfStudents);
+
+            while (read.hasNextLine()) {
+                String line = read.nextLine();
+                String[] lineSplit = line.split(";");
+
+                int index = 0;
+
+                String course = lineSplit[index];
+
+                index++;
+
+                String adminNumber = lineSplit[index];
+
+                index++;
+
+                String name = lineSplit[index];
+
+                index++;
+
+                int numberOfModules = Integer.parseInt(lineSplit[index]);
+
+                System.out.println(course);
+                System.out.println(adminNumber);
+                System.out.println(name);
+
+                Module[] modules = new Module[numberOfModules];
+
+                for(int x = 0; x < numberOfModules; x++) {
+                    String moduleCode = lineSplit[index + 1];
+                    String moduleName = lineSplit[index + 2];
+                    int moduleCredit = Integer.parseInt(lineSplit[index + 3]);
+                    double moduleMark = Double.parseDouble(lineSplit[index + 4]);
+                   modules[x] = new Module(moduleCode, moduleName, moduleCredit, moduleMark);
+
+                    System.out.println(moduleCode);
+                    System.out.println(moduleName);
+                    System.out.println(moduleCredit);
+                    System.out.println(moduleMark);
+
+                    index += 4;
+                }
+
+                index++;
+                String status = lineSplit[index];
+
+                if(status.equals("International Student")){
+                    index++;
+                    String requirePass = lineSplit[index];
+//                    Convert the string to boolean
+                    boolean requirePassBoolean = Boolean.parseBoolean(requirePass);
+                    this.createInternationalStudent(course, adminNumber, name, modules, requirePassBoolean);
+                }else{
+                    this.createStudent(course, adminNumber, name, modules);
+                }
+            }
+
+        } catch (FileNotFoundException e) {
+            System.out.println(e);
+        }
     }
 
     //  Method to create student
@@ -39,6 +96,15 @@ public class StudentManagement {
 //        insertStudentIndex is equal to a method that finds the last index of a student that is not null (out of 1000
         int insertStudentIndex = findIndexOfLastStudent();
         students[insertStudentIndex] = new Student(course, adminNumber, name, modules);
+
+//        Increase the size of the student array (this is to facilitate the search function and other functions that require to get the latest array of students)
+        studentSize++;
+    }
+
+    public void createInternationalStudent(String course, String adminNumber, String name, Module[] modules, boolean requirePass){
+        //        insertStudentIndex is equal to a method that finds the last index of a student that is not null (out of 1000
+        int insertStudentIndex = findIndexOfLastStudent();
+        students[insertStudentIndex] = new InternationalStudent(course, adminNumber, name, modules, requirePass);
 
 //        Increase the size of the student array (this is to facilitate the search function and other functions that require to get the latest array of students)
         studentSize++;
@@ -184,7 +250,7 @@ public class StudentManagement {
             if (students[i].getModules().length > 0) {
                 returnString.append("<tr><td>No.</td><td>Module Code</td><td>Module Credit Unit</td><td>Module Name</td><td>Module Marks</td></tr>");
                 returnString.append(getModulesString(students[i]));
-            }else{
+            } else {
                 returnString.append("<tr><td colspan='5'>No modules</td></tr>");
             }
 

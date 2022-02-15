@@ -5,12 +5,14 @@
  */
 
 import javax.swing.*;
+import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class StudentUser {
     private static final StudentManagement studentManagement = new StudentManagement();
+
     private static String SECRET_PASSWORD = "hello";
 
     //    Student search panel
@@ -239,7 +241,7 @@ public class StudentUser {
                         }
 
 //                        If the student module number is not null and if the choice is 0 (meaning the student has 0 modules), then show error message
-                        while (studentModuleNumberChoice != null && !studentModuleNumberChoice.matches("^[1-10]$")) {
+                        while (studentModuleNumberChoice != null && !studentModuleNumberChoice.matches("^[1-9]$")) {
                             ErrorHandler.showErrorMessage("Student must have at least one module!");
                             studentModuleNumberChoice = JOptionPane.showInputDialog(moduleChoiceMessage);
                         }

@@ -94,4 +94,8 @@ public class Student {
     public void setModules(Module[] modules) {
         this.modules = modules;
     }
+
+    public String print(){
+        return "I am a Local Student";
+    }
 }
